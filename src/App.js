@@ -1,24 +1,56 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+/** @jsx jsx */
+
+import { jsx, css } from '@emotion/core';
+import { useState } from 'react';
+
+const containerCss = css`
+  display: flex;
+  width: 100vw;
+  background: #fcf8eb;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+`;
+
+const todosList = css`
+  display: flex;
+  flex-direction: column;
+`;
 
 function App() {
+  const [message, setMessage] = useState('');
+  const [todos, setTodos] = useState([]);
+
+  const addTodo = () => {
+    const todo = {
+      message,
+      id: todos.length + 1,
+      completed: false,
+    };
+
+    setTodos([todo, ...todos]);
+    setMessage('');
+  };
+
+  const changeTodoStatus = (index) => {
+    const t = todos[index];
+    todos[index] = {...t, completed: !t.completed};
+    setTodos(todos.slice());
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div css={containerCss}>
+      <div>
+      <div css={todosList}>
+        {todos.map((t, i) => (
+          <div key={`id-${t.id}`} id={`id-${t.id}`}>{t.message} - {t.completed ? 'completed' : ' uncompleted'} <button id={`todo-button-${t.id}`} onClick={() => changeTodoStatus(i)}> {t.completed ? 'uncomplete' : ' complete'} </button> </div>
+        ))}
+      </div>
+
+      <input type="text" value={message} onChange={({ target }) => setMessage(target.value)} />
+
+      <button id="c1" onClick={addTodo}>Add</button>
+      </div>
     </div>
   );
 }
